@@ -11,12 +11,14 @@ import {
   UPDATE_ADD_ADDRESS_POPUP_STATE,
   UPDATE_ADD_PRODUCT_POPUP_STATE,
 } from "./Redux/ActionTypes";
+import { BG_LINE_IMG } from "./Utils/Constants/StaticData";
 
 import { getUserData } from "./Services/user.service";
 import notify from "./Utils/Helpers/notifyToast";
 
-import Home from "./Containers/Home";
 import { ToastContainer } from "react-toastify";
+import Home from "./Containers/Home";
+import NavBar from "./Components/NavBar";
 import Preloader from "./Components/Preloader";
 
 const App = () => {
@@ -43,12 +45,6 @@ const App = () => {
   }, [cookie.token]);
 
   const fetchUserData = async () => {
-    // setCookie(
-    //   "token",
-    //   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxZDEyZjUwYmQ3ODY4NzBiODdmMmY4ZiIsImlhdCI6MTY0MTA5OTA4OH0.kY_HiMKWRfbAZoeH2MSwb8F7zdWzKrmDU79AZ_3BoJI",
-    //   { sameSite: "strict" }
-    // );
-
     if (cookie.token) {
       try {
         const localeUserData = await getUserData(cookie.token);
@@ -76,27 +72,20 @@ const App = () => {
     }
   };
 
-  const closeAddAddressPopup = () => {
-    dispatch({
-      type: UPDATE_ADD_ADDRESS_POPUP_STATE,
-      value: false,
-    });
-  };
-
-  const closeAddProductPopup = () => {
-    dispatch({
-      type: UPDATE_ADD_PRODUCT_POPUP_STATE,
-      value: false,
-    });
-  };
-
   return (
     <>
       <ToastContainer bodyClassName={styles.ToastBody} />
       {initialized ? (
-        <Routes>
-          <Route path={"/"} element={<Home />} />
-        </Routes>
+        <div className={styles.Wrapper}>
+          <NavBar isLoggedIn={userData ? true : false} />
+          <img src={BG_LINE_IMG} alt="bg-line" className={styles.BgLine} />
+          <Routes>
+            {["/", "login", "signup"].map((path, index) => (
+              <Route key={index} path={path} element={<Home />} />
+            ))}
+            <Route path="*" element={<Navigate to="/" />} />
+          </Routes>
+        </div>
       ) : (
         <>
           <Preloader />
