@@ -25,6 +25,8 @@ import PopUp from "./Components/_General/PopUp/PopUp";
 import AddAddress from "./Components/AddAddress";
 import AddProduct from "./Components/AddProduct/AddProduct";
 import Profile from "./Containers/Profile";
+import Search from "./Containers/Search";
+import Product from "./Containers/Product";
 
 const App = () => {
   const userData = useSelector((state) => state.userReducer.userData);
@@ -102,6 +104,8 @@ const App = () => {
             {["/", "login", "signup"].map((path, index) => (
               <Route key={index} path={path} element={<Home />} />
             ))}
+            <Route exact path="/search" element={<Search />} />
+            <Route path="p/:id" element={<Product />} />
             <Route
               exact
               path="/profile/*"
