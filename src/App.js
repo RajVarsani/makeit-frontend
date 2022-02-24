@@ -20,6 +20,11 @@ import { ToastContainer } from "react-toastify";
 import Home from "./Containers/Home";
 import NavBar from "./Components/NavBar";
 import Preloader from "./Components/Preloader";
+import PrivateRoute from "./Utils/Helpers/PrivateRoute";
+import PopUp from "./Components/_General/PopUp/PopUp";
+import AddAddress from "./Components/AddAddress";
+import AddProduct from "./Components/AddProduct/AddProduct";
+import Profile from "./Containers/Profile";
 
 const App = () => {
   const userData = useSelector((state) => state.userReducer.userData);
@@ -72,6 +77,20 @@ const App = () => {
     }
   };
 
+  const closeAddAddressPopup = () => {
+    dispatch({
+      type: UPDATE_ADD_ADDRESS_POPUP_STATE,
+      value: false,
+    });
+  };
+
+  const closeAddProductPopup = () => {
+    dispatch({
+      type: UPDATE_ADD_PRODUCT_POPUP_STATE,
+      value: false,
+    });
+  };
+
   return (
     <>
       <ToastContainer bodyClassName={styles.ToastBody} />
@@ -83,8 +102,43 @@ const App = () => {
             {["/", "login", "signup"].map((path, index) => (
               <Route key={index} path={path} element={<Home />} />
             ))}
+            <Route
+              exact
+              path="/profile/*"
+              element={
+                <PrivateRoute>
+                  <Profile refreshUserData={fetchUserData} />
+                </PrivateRoute>
+              }
+            ></Route>
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
+          {userData && (
+            <>
+              <PopUp
+                isOpen={popupStates.addAddress}
+                ContentComp={
+                  <AddAddress
+                    closePopupFunction={closeAddAddressPopup}
+                    refreshDataFunction={fetchUserData}
+                  />
+                }
+                closeFun={closeAddAddressPopup}
+                withBorder={false}
+              />
+              <PopUp
+                isOpen={userData.isSeller && popupStates.addProduct}
+                ContentComp={
+                  <AddProduct
+                    closePopupFunction={closeAddProductPopup}
+                    refreshDataFunction={fetchUserData}
+                  />
+                }
+                closeFun={closeAddProductPopup}
+                withBorder={false}
+              />
+            </>
+          )}
         </div>
       ) : (
         <>
