@@ -27,6 +27,8 @@ import AddProduct from "./Components/AddProduct/AddProduct";
 import Profile from "./Containers/Profile";
 import Search from "./Containers/Search";
 import Product from "./Containers/Product";
+import Cart from "./Containers/Cart";
+import Order from "./Containers/Order";
 
 const App = () => {
   const userData = useSelector((state) => state.userReducer.userData);
@@ -106,6 +108,22 @@ const App = () => {
             ))}
             <Route exact path="/search" element={<Search />} />
             <Route path="p/:id" element={<Product />} />
+            <Route
+              path="o/:id"
+              element={
+                <PrivateRoute>
+                  <Order />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="cart"
+              element={
+                <PrivateRoute>
+                  <Cart />
+                </PrivateRoute>
+              }
+            />
             <Route
               exact
               path="/profile/*"
