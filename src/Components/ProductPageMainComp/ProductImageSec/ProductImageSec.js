@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import styles from "./ProductImageSec.module.css";
 import Button from "./../../Button/index";
@@ -9,6 +9,7 @@ import notify from "./../../../Utils/Helpers/notifyToast";
 import { addProductToCart } from "../../../Services/user.service";
 import { addProductToOrder } from "./../../../Services/order.service";
 import { useNavigate } from "react-router-dom";
+import { UPDATE_PAYMENT_POPUP_STATE } from "../../../Redux/ActionTypes";
 
 function ProductImageSec({
   images,
@@ -18,6 +19,7 @@ function ProductImageSec({
 }) {
   const navigate = useNavigate();
   const userData = useSelector((state) => state.userReducer.userData);
+  const dispatch = useDispatch();
 
   const [currentImage, setCurrentImage] = useState(0);
 
@@ -38,20 +40,31 @@ function ProductImageSec({
 
   const placeOrder = async () => {
     if (userData?.address?.length > 0) {
-      console.log("Place order");
-      try {
-        const response = await addProductToOrder(
-          userData.accessToken,
-          productId,
-          productDetails.various_size[currentSelections.size],
-          Object.values(currentSelections.attachments),
-          userData.address[currentSelections.address]
-        );
-        notify("Successfully placed order", "success");
-      } catch (err) {
-        console.log(err);
-        notify("Failed to place order", "error");
-      }
+      const callbackFun = async () => {
+        console.log("Place order");
+        try {
+          await addProductToOrder(
+            userData.accessToken,
+            productId,
+            productDetails.various_size[currentSelections.size],
+            Object.values(currentSelections.attachments),
+            userData.address[currentSelections.address]
+          );
+          notify("Successfully placed order", "success");
+          navigate("/profile/orders");
+        } catch (err) {
+          console.log(err);
+          notify("Failed to place order", "error");
+        }
+      };
+
+      dispatch({
+        type: UPDATE_PAYMENT_POPUP_STATE,
+        value: {
+          show: true,
+          data: { callbackFun, amount: productDetails.price },
+        },
+      });
     } else {
       notify("Please add address", "error");
       navigate("/profile/");

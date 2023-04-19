@@ -10,6 +10,7 @@ import {
   UPDATE_USER_DATA,
   UPDATE_ADD_ADDRESS_POPUP_STATE,
   UPDATE_ADD_PRODUCT_POPUP_STATE,
+  UPDATE_PAYMENT_POPUP_STATE,
 } from "./Redux/ActionTypes";
 import { BG_LINE_IMG } from "./Utils/Constants/StaticData";
 
@@ -29,6 +30,7 @@ import Search from "./Containers/Search";
 import Product from "./Containers/Product";
 import Cart from "./Containers/Cart";
 import Order from "./Containers/Order";
+import Payment from "./Components/Payment/Payment";
 
 const App = () => {
   const userData = useSelector((state) => state.userReducer.userData);
@@ -95,6 +97,16 @@ const App = () => {
     });
   };
 
+  const closePaymentPopup = () => {
+    dispatch({
+      type: UPDATE_PAYMENT_POPUP_STATE,
+      value: {
+        show: false,
+        data: {},
+      },
+    });
+  };
+
   return (
     <>
       <ToastContainer bodyClassName={styles.ToastBody} />
@@ -157,6 +169,12 @@ const App = () => {
                   />
                 }
                 closeFun={closeAddProductPopup}
+                withBorder={false}
+              />
+              <PopUp
+                isOpen={popupStates.payment.show}
+                ContentComp={<Payment closePopupFunction={closePaymentPopup} />}
+                closeFun={closePaymentPopup}
                 withBorder={false}
               />
             </>
