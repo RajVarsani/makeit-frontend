@@ -1,7 +1,10 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { UPDATE_ADD_ADDRESS_POPUP_STATE } from "../../Redux/ActionTypes";
+import {
+  UPDATE_ADD_ADDRESS_POPUP_STATE,
+  UPDATE_PAYMENT_POPUP_STATE,
+} from "../../Redux/ActionTypes";
 import { CART_DATA } from "./../../Utils/Constants/StaticData";
 
 import styles from "./CartMainSec.module.css";
@@ -11,26 +14,45 @@ import Button from "./../Button/index";
 import { ReactComponent as PlusIcon } from "../../Assets/Cart/Plus.svg";
 import notify from "./../../Utils/Helpers/notifyToast";
 import { addCartToOrder } from "../../Services/order.service";
+import { useNavigate } from "react-router-dom";
 
 function CartMainSec({ cartData, addresses, refreshDataFunction }) {
   const userData = useSelector((state) => state.userReducer.userData);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [currentAddressIndex, setCurrentAddressIndex] = React.useState(0);
 
   const placeOrder = async () => {
     if (userData.address.length > 0) {
-      try {
-        const response = await addCartToOrder(
-          userData.accessToken,
-          userData.address[currentAddressIndex]
-        );
-        await refreshDataFunction();
-        notify("Order Placed Successfully", "success");
-      } catch (err) {
-        console.log(err);
-        notify("Something went wrong", "error");
-      }
+      const callbackFun = async () => {
+        try {
+          await addCartToOrder(
+            userData.accessToken,
+            userData.address[currentAddressIndex]
+          );
+          await refreshDataFunction();
+          notify("Order Placed Successfully", "success");
+          navigate("/profile/orders");
+        } catch (err) {
+          console.log(err);
+          notify("Something went wrong", "error");
+        }
+      };
+
+      dispatch({
+        type: UPDATE_PAYMENT_POPUP_STATE,
+        value: {
+          show: true,
+          data: {
+            callbackFun,
+            amount: cartData.reduce(
+              (acc, item) => acc + item.product_details.price,
+              0
+            ),
+          },
+        },
+      });
     } else {
       notify("Please add address", "error");
     }
