@@ -3,7 +3,7 @@
 
 ![149317179-c574250e-8689-483e-bdcf-bb53dd48b002](https://user-images.githubusercontent.com/74860406/155853511-ecc7226c-8a0b-4adf-9ee2-7cc41088e7c9.png)
 
- <h3><a href="https://makeit-netlify.netlify.app/">MakeIt🔗</a> <a href="https://www.figma.com/file/mBHnID7LqXgSqL9MJ07K8F/Makeit-Website">Figma🔗</a></h3>
+ <h3><a href="https://makeit-frontend.vercel.app/">MakeIt🔗</a> <a href="https://www.figma.com/file/mBHnID7LqXgSqL9MJ07K8F/Makeit-Website">Figma🔗</a></h3>
 
 </div>
 
