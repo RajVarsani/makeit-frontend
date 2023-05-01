@@ -20,7 +20,7 @@
 - redux version: 4.0.5
 - @mui/material version: 5.2.7
 - Figma ( Design )
-- Netlify ( Deployment )
+- Vercel ( Deployment )
 
 ## Screens shots:
 
